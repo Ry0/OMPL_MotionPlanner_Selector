@@ -17,11 +17,17 @@
 #include <cmath>
 #include <iostream>
 #include <fstream>
+#include <ostream>
 
 namespace ob = ompl::base;
 namespace og = ompl::geometric;
 
 using namespace std;
+
+typedef struct {
+  double xrange[2];
+  double yrange[2];
+} RANGE;
 
 namespace MotionPlan
 {
@@ -31,6 +37,7 @@ namespace MotionPlan
     public:
       Planning(std::string fileName);
       void initFromFile(std::string fileName);
+      void CreateCube();
       void PlannerSelector();
       void printEdge(std::ostream &os, const ob::StateSpacePtr &space, const ob::PlannerDataVertex &vertex);
       void planWithSimpleSetup();
@@ -42,18 +49,18 @@ namespace MotionPlan
       double* xMax;
       double* yMin;
       double* yMax;
-      /// Number of obstacles in space.
+      // Number of obstacles in space.
       int numObstacles;
-      /// Start position in space
+      // Start position in space
       double xStart;
       double yStart;
-      /// Goal position in space
+      // Goal position in space
       double xGoal;
       double yGoal;
-      /// Max. distance toward each sampled position we
-      /// should grow our tree
+      // Max. distance toward each sampled position we
+      // should grow our tree
       double stepSize;
-      /// Boundaries of the space
+      // Boundaries of the space
       double xLeft;
       double xRight;
       double yTop;

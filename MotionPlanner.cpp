@@ -1,6 +1,6 @@
 #include "MotionPlanner.h"
 
-// Return true if the state is valid, false if the state is invalid
+// 障害物の範囲外か内か
 bool MotionPlan::isStateValid(const ob::State *state, int numObstacles, double xMin[], double xMax[], double yMin[], double yMax[])
 {
   const ob::SE2StateSpace::StateType *state_2d= state->as<ob::SE2StateSpace::StateType>();
@@ -11,13 +11,14 @@ bool MotionPlan::isStateValid(const ob::State *state, int numObstacles, double x
       return false;
     }
   }
-  // Otherwise, the state is valid:
+
   return true;
 }
 
-
+// コンストラクタ
 MotionPlan::Planning::Planning(std::string fileName){
   initFromFile(fileName);
+  CreateCube();
   PlannerSelector();
 }
 
@@ -53,6 +54,31 @@ void MotionPlan::Planning::initFromFile(std::string fileName)
 }
 
 
+void MotionPlan::Planning::CreateCube()
+{
+  RANGE obstacle;
+  ofstream cube("../plot/obstacle.dat");
+  ofstream plot_start("../plot/start.dat");
+  ofstream plot_goal("../plot/goal.dat");
+
+  plot_start << xStart << "\t" << yStart << std::endl;
+  plot_goal << xGoal << "\t" << yGoal << std::endl;
+
+  for(int ob = 0; ob < numObstacles; ++ob){
+    obstacle.xrange[0] = xMin[ob]; obstacle.yrange[0] = yMin[ob];
+    obstacle.xrange[1] = xMax[ob]; obstacle.yrange[1] = yMax[ob];
+    for (int i = 0; i < 2; ++i){
+      cube << obstacle.xrange[0] << "\t" << obstacle.yrange[0] << "\t" << std::endl;
+      cube << obstacle.xrange[1] << "\t" << obstacle.yrange[0] << "\t" << std::endl;
+      cube << obstacle.xrange[1] << "\t" << obstacle.yrange[1] << "\t" << std::endl;
+      cube << obstacle.xrange[0] << "\t" << obstacle.yrange[1] << "\t" << std::endl;
+      cube << obstacle.xrange[0] << "\t" << obstacle.yrange[0] << "\t" << std::endl;
+      cube << "\n\n";
+    }
+  }
+}
+
+
 void MotionPlan::Planning::PlannerSelector()
 {
   std::string plan[9] = {"PRM",    "RRT",     "RRTConnect", "RRTstar",
@@ -72,10 +98,13 @@ void MotionPlan::Planning::PlannerSelector()
     printf("pRRT       → 8\n");
     printf("EST        → 9\n");
 
-    do {
+    while (1) {
       cout << "数字を入力 >>";
       cin >> selector;
-    } while (selector < 1 || 9 < selector);
+      if(1 <= selector && selector <= 9){
+        break;
+      }
+    }
 
     cout << plan[selector - 1] << "プランナーを使います よろしいですか？(y/n)" << endl;
     cin >> yn;
@@ -229,10 +258,11 @@ void MotionPlan::Planning::output_plt(std::string plt_output)
   plt << "set key top right" << endl;
   plt << "set size square" << endl;
 
-
-  plt << "plot \"testcase1_obstacle.dat\" using 1:2 with filledcurves lt rgb \"#ff0033\" fill solid 0.5 notitle,\\" << endl;
+  plt << "plot \"obstacle.dat\" using 1:2 with filledcurves lt rgb \"#ff0033\" fill solid 0.5 notitle,\\" << endl;
+  plt << "\"start.dat\" using 1:2 with points pt 7 ps 2 lt rgb \"#ff9900\" title \"Start\",\\" << endl;
+  plt << "\"goal.dat\" using 1:2 with points pt 7 ps 2 lt rgb \"#15BB15\" title \"Goal\",\\" << endl;
   plt << "\"edges.dat\" using 1:2 with lines lt 1 lc rgb \"#728470\" lw 0.5 title \"edges\",\\" << endl;
-  if(selector == 1 ){
+  if(selector == 1){
     plt << "\"vertices.dat\" using 1:2 with points pt 7 ps 1 lt rgb \"#5BBC77\" title \"Vertices\",\\" << endl;
   }
   plt << "\"path.dat\" using 1:2 with lines lt 1 lc rgb \"#191970\" lw 2 title \"Path\",\\" << endl;

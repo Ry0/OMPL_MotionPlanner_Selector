@@ -6,6 +6,11 @@ cmake_install.cmake
 *.DS_Store
 *~
 edges.dat
+goal.dat
 path.dat
 path0.dat
+plot.plt
+start.dat
+testcase1.dat
+obstacle.dat
 vertices.dat
