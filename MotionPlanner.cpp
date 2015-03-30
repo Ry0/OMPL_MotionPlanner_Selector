@@ -261,8 +261,8 @@ void MotionPlan::Planning::output_plt(std::string plt_output)
   plt << "set size square" << endl;
 
   plt << "plot \"obstacle.dat\" using 1:2 with filledcurves lt rgb \"#ff0033\" fill solid 0.5 notitle,\\" << endl;
-  plt << "\"start.dat\" using 1:2 with points pt 7 ps 2 lt rgb \"#ff9900\" title \"Start\",\\" << endl;
-  plt << "\"goal.dat\" using 1:2 with points pt 7 ps 2 lt rgb \"#15BB15\" title \"Goal\",\\" << endl;
+  plt << "\"start.dat\" using 1:2 with points pt 7 ps 1.5 lt rgb \"#ff9900\" title \"Start\",\\" << endl;
+  plt << "\"goal.dat\" using 1:2 with points pt 7 ps 1.5 lt rgb \"#15BB15\" title \"Goal\",\\" << endl;
   plt << "\"edges.dat\" using 1:2 with lines lt 1 lc rgb \"#728470\" lw 0.5 title \"edges\",\\" << endl;
   if(selector == 1){
     plt << "\"vertices.dat\" using 1:2 with points pt 7 ps 1 lt rgb \"#5BBC77\" title \"Vertices\",\\" << endl;

@@ -2,7 +2,7 @@
 
 int main()
 {
-  MotionPlan::Planning planning("../plot/testcase1.dat");
+  MotionPlan::Planning planning("../plot/testcase.dat");
   planning.planWithSimpleSetup();
   planning.OpenGnuplot();
   return 0;
