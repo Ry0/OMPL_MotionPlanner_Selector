@@ -1,4 +1,5 @@
 #include "MotionPlanner.h"
+using namespace std;
 
 // 障害物の範囲外か内か
 bool MotionPlan::isStateValid(const ob::State *state, int numObstacles, double xMin[], double xMax[], double yMin[], double yMax[])
@@ -14,6 +15,7 @@ bool MotionPlan::isStateValid(const ob::State *state, int numObstacles, double x
 
   return true;
 }
+
 
 // コンストラクタ
 MotionPlan::Planning::Planning(std::string fileName){

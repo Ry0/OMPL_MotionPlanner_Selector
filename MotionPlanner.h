@@ -22,8 +22,6 @@
 namespace ob = ompl::base;
 namespace og = ompl::geometric;
 
-using namespace std;
-
 typedef struct {
   double xrange[2];
   double yrange[2];
