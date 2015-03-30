@@ -11,6 +11,7 @@
 git clone git@github.com:Ry0/OMPL_MotionPlanner_Selector.git
 cd OMPL_MotionPlanner_Selector
 mkdir build
+cd build
 cmake ..
 make
 ./MotionPlanner
