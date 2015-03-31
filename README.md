@@ -2,13 +2,13 @@
 ##動作環境
 
 * Ubuntu 14.04
-* OMPL
+* OMPL MoveIt!経由でインストールするのが楽(要ROS)→[インストールページ](http://moveit.ros.org/install/)
 * Gnuplot
 
 ##コンパイル
 
 ```bash
-git clone git@github.com:Ry0/OMPL_MotionPlanner_Selector.git
+git clone https://github.com/Ry0/OMPL_MotionPlanner_Selector.git
 cd OMPL_MotionPlanner_Selector
 mkdir build
 cd build
