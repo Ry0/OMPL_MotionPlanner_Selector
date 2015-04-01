@@ -1,31 +1,15 @@
 #include "MotionPlanner.h"
 using namespace std;
 
-// 障害物の範囲外か内か
-bool MotionPlan::isStateValid(const ob::State *state, int numObstacles, double xMin[], double xMax[], double yMin[], double yMax[])
-{
-  const ob::SE2StateSpace::StateType *state_2d= state->as<ob::SE2StateSpace::StateType>();
-  const double &x(state_2d->getX()), &y(state_2d->getY());
-
-  for (int i = 0; i < numObstacles; ++i){
-    if (xMin[i] <= x && x <= xMax[i] && yMin[i] <= y && y <= yMax[i]){
-      return false;
-    }
-  }
-
-  return true;
-}
-
-
 // コンストラクタ
-MotionPlan::Planning::Planning(std::string fileName){
+Planning::Planning(std::string fileName){
   initFromFile(fileName);
   CreateCube();
   PlannerSelector();
 }
 
 
-void MotionPlan::Planning::initFromFile(std::string fileName)
+void Planning::initFromFile(std::string fileName)
 {
   std::ifstream input(fileName.c_str());
 
@@ -56,7 +40,7 @@ void MotionPlan::Planning::initFromFile(std::string fileName)
 }
 
 
-void MotionPlan::Planning::CreateCube()
+void Planning::CreateCube()
 {
   RANGE obstacle;
   ofstream cube("../plot/obstacle.dat");
@@ -81,7 +65,7 @@ void MotionPlan::Planning::CreateCube()
 }
 
 
-void MotionPlan::Planning::PlannerSelector()
+void Planning::PlannerSelector()
 {
   std::string plan[9] = {"PRM",    "RRT",     "RRTConnect", "RRTstar",
                          "LBTRRT", "LazyRRT", "TRRT",       "pRRT",
@@ -117,8 +101,23 @@ void MotionPlan::Planning::PlannerSelector()
 }
 
 
+bool Planning::isStateValid(const ob::State *state)
+{
+  const ob::SE2StateSpace::StateType *state_2d= state->as<ob::SE2StateSpace::StateType>();
+  const double &x(state_2d->getX()), &y(state_2d->getY());
+
+  for (int i = 0; i < numObstacles; ++i){
+    if (xMin[i] <= x && x <= xMax[i] && yMin[i] <= y && y <= yMax[i]){
+      return false;
+    }
+  }
+
+  return true;
+}
+
+
 // Print a vertex to file
-void MotionPlan::Planning::printEdge(std::ostream &os, const ob::StateSpacePtr &space, const ob::PlannerDataVertex &vertex)
+void Planning::printEdge(std::ostream &os, const ob::StateSpacePtr &space, const ob::PlannerDataVertex &vertex)
 {
   std::vector<double> reals;
   if(vertex!=ob::PlannerData::NO_VERTEX)// 頂点が存在しない状態じゃなかったら
@@ -131,7 +130,7 @@ void MotionPlan::Planning::printEdge(std::ostream &os, const ob::StateSpacePtr &
 }
 
 
-void MotionPlan::Planning::planWithSimpleSetup()
+void Planning::planWithSimpleSetup()
 {
   // Construct the state space where we are planning
   ob::StateSpacePtr space(new ob::SE2StateSpace());
@@ -147,7 +146,7 @@ void MotionPlan::Planning::planWithSimpleSetup()
   og::SimpleSetup ss(space);
 
   // Setup the StateValidityChecker
-  ss.setStateValidityChecker(boost::bind(&isStateValid, _1, numObstacles, xMin, xMax, yMin, yMax));
+  ss.setStateValidityChecker(boost::bind(&Planning::isStateValid, this, _1));
 
   // Setup Start and Goal
   ob::ScopedState<ob::SE2StateSpace> start(space);
@@ -192,7 +191,7 @@ void MotionPlan::Planning::planWithSimpleSetup()
   cout << "----------------" << endl;
 
   // Execute the planning algorithm
-  ob::PlannerStatus solved = ss.solve(1.0);
+  ob::PlannerStatus solved = ss.solve(5.0);
 
   // If we have a solution,
   if (solved)
@@ -245,7 +244,7 @@ void MotionPlan::Planning::planWithSimpleSetup()
 }
 
 
-void MotionPlan::Planning::output_plt(std::string plt_output)
+void Planning::output_plt(std::string plt_output)
 {
   std::ofstream plt(plt_output);
 
@@ -273,7 +272,7 @@ void MotionPlan::Planning::output_plt(std::string plt_output)
 
 
 // 参考：http://www-sens.sys.es.osaka-u.ac.jp/wakate/tutorial/group3/gnuplot/
-int MotionPlan::Planning::OpenGnuplot()
+int Planning::OpenGnuplot()
 {
   output_plt("../plot/plot.plt");
 

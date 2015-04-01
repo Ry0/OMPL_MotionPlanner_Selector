@@ -27,44 +27,40 @@ typedef struct {
   double yrange[2];
 } RANGE;
 
-namespace MotionPlan
-{
-  bool isStateValid(const ob::State *state, int numObstacles, double xMin[], double xMax[], double yMin[], double yMax[]);
+class Planning{
+  public:
+    Planning(std::string fileName);
+    void initFromFile(std::string fileName);
+    void CreateCube();
+    void PlannerSelector();
+    void printEdge(std::ostream &os, const ob::StateSpacePtr &space, const ob::PlannerDataVertex &vertex);
+    bool isStateValid(const ob::State *state);
+    void planWithSimpleSetup();
+    void output_plt(std::string plt_output);
+    int OpenGnuplot();
 
-  class Planning{
-    public:
-      Planning(std::string fileName);
-      void initFromFile(std::string fileName);
-      void CreateCube();
-      void PlannerSelector();
-      void printEdge(std::ostream &os, const ob::StateSpacePtr &space, const ob::PlannerDataVertex &vertex);
-      void planWithSimpleSetup();
-      void output_plt(std::string plt_output);
-      int OpenGnuplot();
+  private:
+    double* xMin;
+    double* xMax;
+    double* yMin;
+    double* yMax;
+    // Number of obstacles in space.
+    int numObstacles;
+    // Start position in space
+    double xStart;
+    double yStart;
+    // Goal position in space
+    double xGoal;
+    double yGoal;
+    // Max. distance toward each sampled position we
+    // should grow our tree
+    double stepSize;
+    // Boundaries of the space
+    double xLeft;
+    double xRight;
+    double yTop;
+    double yBottom;
 
-    private:
-      double* xMin;
-      double* xMax;
-      double* yMin;
-      double* yMax;
-      // Number of obstacles in space.
-      int numObstacles;
-      // Start position in space
-      double xStart;
-      double yStart;
-      // Goal position in space
-      double xGoal;
-      double yGoal;
-      // Max. distance toward each sampled position we
-      // should grow our tree
-      double stepSize;
-      // Boundaries of the space
-      double xLeft;
-      double xRight;
-      double yTop;
-      double yBottom;
-
-      int selector;
-  };
+    int selector;
 };
 #endif
