@@ -2,7 +2,7 @@
 
 int main()
 {
-  Planning planning("../plot/testcase1.dat");
+  Planning planning("../plot/testcase.dat");
   planning.planWithSimpleSetup();
   planning.OpenGnuplot();
   return 0;

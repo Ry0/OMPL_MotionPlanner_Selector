@@ -12,7 +12,10 @@ Planning::Planning(std::string fileName){
 void Planning::initFromFile(std::string fileName)
 {
   std::ifstream input(fileName.c_str());
-
+  if (!input) {
+    std::cerr << "ファイルオープンに失敗" << std::endl;
+    std::exit(1);
+  }
   input >> xLeft >> xRight >> yBottom >> yTop >> numObstacles;
 
   xMin = new double[numObstacles];
